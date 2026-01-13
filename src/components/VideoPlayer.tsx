@@ -213,6 +213,11 @@ const VideoPlayer = ({
     videoRef
   });
 
+  // Double-tap detection for fullscreen toggle
+  const lastTapTimeRef = useRef(0);
+  const doubleTapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const DOUBLE_TAP_DELAY = 300; // ms
+
   // Pinch-to-zoom for mobile/iPad fullscreen - Telegram-style
   const { 
     scale: zoomScale, 
@@ -1215,6 +1220,35 @@ const VideoPlayer = ({
     };
   }, []);
 
+  // Hardware back button handler for Android native - exits fullscreen
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    
+    let removeBackButtonListener: (() => void) | null = null;
+
+    const setupBackButtonHandler = async () => {
+      try {
+        const { App } = await import('@capacitor/app');
+        const listener = await App.addListener('backButton', () => {
+          console.log('[VideoPlayer] Back button pressed, isFullscreen:', isFullscreen);
+          if (isFullscreen) {
+            // Exit fullscreen instead of navigating back
+            iPadToggleFullscreen();
+          }
+        });
+        removeBackButtonListener = () => listener.remove();
+      } catch (e) {
+        console.log('[VideoPlayer] Back button listener not available:', e);
+      }
+    };
+
+    setupBackButtonHandler();
+
+    return () => {
+      removeBackButtonListener?.();
+    };
+  }, [isFullscreen, iPadToggleFullscreen]);
+
   const handleServerChange = (source: VideoSource) => {
     const wasPlaying = videoRef.current && !videoRef.current.paused;
     const savedTime = videoRef.current?.currentTime || 0;
@@ -2050,12 +2084,34 @@ const VideoPlayer = ({
         </div>
       )}
 
-      {/* Click overlay for play/pause */}
+      {/* Click overlay for play/pause with double-tap fullscreen toggle */}
       {sourceType !== "embed" && sourceType !== "iframe" && !allSourcesMobileOnly && !allSourcesWebOnly && !isCurrentServerRestricted && (
         <div 
           className="absolute inset-0 z-10 cursor-pointer"
           onClick={(e) => {
-            if (e.target === e.currentTarget) togglePlayPause();
+            if (e.target !== e.currentTarget) return;
+            
+            const now = Date.now();
+            const timeSinceLastTap = now - lastTapTimeRef.current;
+            
+            if (timeSinceLastTap < DOUBLE_TAP_DELAY && timeSinceLastTap > 0) {
+              // Double tap detected - toggle fullscreen
+              if (doubleTapTimeoutRef.current) {
+                clearTimeout(doubleTapTimeoutRef.current);
+                doubleTapTimeoutRef.current = null;
+              }
+              console.log('[VideoPlayer] Double-tap detected - toggling fullscreen');
+              toggleFullscreen();
+              lastTapTimeRef.current = 0;
+            } else {
+              // First tap - wait to see if it's a double tap
+              lastTapTimeRef.current = now;
+              doubleTapTimeoutRef.current = setTimeout(() => {
+                // Single tap - toggle play/pause
+                togglePlayPause();
+                doubleTapTimeoutRef.current = null;
+              }, DOUBLE_TAP_DELAY);
+            }
           }}
         />
       )}
