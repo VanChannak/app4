@@ -204,13 +204,36 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           z-index: 100000 !important;
           /* Ensure controls receive pointer events */
           pointer-events: auto !important;
+          /* CRITICAL for Android: position context for z-index */
+          position: absolute !important;
         }
         
-        /* Ensure all buttons in fullscreen are tappable */
+        /* Ensure the inner controls wrapper is also clickable */
+        .video-fullscreen-container .video-controls > div {
+          pointer-events: auto !important;
+          position: relative !important;
+          z-index: 100001 !important;
+        }
+        
+        /* Ensure all buttons in fullscreen are tappable - higher specificity */
         .video-fullscreen-container button,
-        .video-fullscreen-container [role="button"] {
+        .video-fullscreen-container [role="button"],
+        .video-fullscreen-container .video-controls button {
           pointer-events: auto !important;
           touch-action: manipulation !important;
+          z-index: 100002 !important;
+          position: relative !important;
+          /* Ensure minimum tap target size for Android */
+          min-width: 44px !important;
+          min-height: 44px !important;
+        }
+        
+        /* Ensure slider/progress bar is interactive */
+        .video-fullscreen-container input[type="range"],
+        .video-fullscreen-container [role="slider"] {
+          pointer-events: auto !important;
+          touch-action: manipulation !important;
+          z-index: 100002 !important;
         }
         
         body.video-fullscreen-active nav,
