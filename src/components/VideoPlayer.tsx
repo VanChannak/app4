@@ -2063,7 +2063,7 @@ const VideoPlayer = ({
       {/* Center Controls - hide when settings menu is open */}
       {sourceType !== "embed" && sourceType !== "iframe" && !allSourcesMobileOnly && !allSourcesWebOnly && !isCurrentServerRestricted && (
         <>
-          <div className={`absolute inset-0 z-20 flex items-center justify-center gap-12 pointer-events-none transition-opacity duration-300 ${showControls && !isLocked && !settingsMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
+          <div className={`video-controls absolute inset-0 z-20 flex items-center justify-center gap-12 pointer-events-none transition-opacity duration-300 ${showControls && !isLocked && !settingsMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
             <Button variant="ghost" size="icon" onClick={skipBackward} className="h-12 w-12 text-white/90 hover:text-white pointer-events-auto">
               <SkipBack className="h-6 w-6" fill="currentColor" />
             </Button>
@@ -2074,7 +2074,7 @@ const VideoPlayer = ({
           </div>
 
           {(!isPlaying || showControls || showCenterIcon) && !isLocked && !settingsMenuOpen && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
+            <div className="video-controls absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
               <Button
                 variant="ghost"
                 size="icon"
@@ -2090,7 +2090,7 @@ const VideoPlayer = ({
 
       {/* Bottom Controls */}
       {sourceType !== "embed" && sourceType !== "iframe" && !allSourcesMobileOnly && !allSourcesWebOnly && !isCurrentServerRestricted && (
-        <div className={`absolute inset-0 z-40 transition-opacity duration-300 pointer-events-none ${showControls ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`video-controls absolute inset-0 z-40 transition-opacity duration-300 pointer-events-none ${showControls ? 'opacity-100' : 'opacity-0'}`}>
           <div className="absolute bottom-0 left-0 right-0 pointer-events-auto">
             {/* Progress Bar */}
             <div className="px-2 sm:px-4 pb-1.5 sm:pb-2">
