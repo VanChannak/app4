@@ -1135,13 +1135,83 @@ const VideoPlayer = ({
     };
   }, []);
 
-  // Cleanup: ensure portrait mode and status bar on unmount
+  // Cleanup: ensure video stops, exit fullscreen, return to portrait on unmount
   useEffect(() => {
     return () => {
+      // CRITICAL: Stop video playback when navigating away
+      if (videoRef.current) {
+        try {
+          videoRef.current.pause();
+          videoRef.current.currentTime = 0;
+          videoRef.current.src = '';
+          videoRef.current.load();
+        } catch (e) {
+          console.log('[VideoPlayer] Cleanup pause failed:', e);
+        }
+      }
+      
+      // Cleanup Shaka player
+      if (shakaPlayerRef.current) {
+        try {
+          shakaPlayerRef.current.destroy().catch(() => {});
+        } catch (e) {
+          console.log('[VideoPlayer] Shaka cleanup failed:', e);
+        }
+        shakaPlayerRef.current = null;
+      }
+      
+      // Exit fullscreen if active
+      if (document.fullscreenElement) {
+        try {
+          document.exitFullscreen().catch(() => {});
+        } catch (e) {
+          console.log('[VideoPlayer] Exit fullscreen failed:', e);
+        }
+      }
+      
+      // Restore native platform state
       if (Capacitor.isNativePlatform()) {
         showStatusBar().catch(console.error);
         lockToPortrait().catch(console.error);
       }
+    };
+  }, []);
+
+  // Pause video when app goes to background or becomes hidden (native Android)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && videoRef.current && !videoRef.current.paused) {
+        console.log('[VideoPlayer] App hidden - pausing video');
+        videoRef.current.pause();
+      }
+    };
+
+    const handleAppStateChange = async () => {
+      // For Capacitor native apps - pause when app goes to background
+      if (Capacitor.isNativePlatform()) {
+        try {
+          const { App } = await import('@capacitor/app');
+          const removeListener = App.addListener('appStateChange', ({ isActive }) => {
+            if (!isActive && videoRef.current && !videoRef.current.paused) {
+              console.log('[VideoPlayer] App inactive - pausing video');
+              videoRef.current.pause();
+            }
+          });
+          return () => {
+            removeListener.then(handle => handle.remove());
+          };
+        } catch (e) {
+          console.log('[VideoPlayer] App state listener not available:', e);
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    const cleanupPromise = handleAppStateChange();
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      cleanupPromise?.then(cleanup => cleanup?.());
     };
   }, []);
 
