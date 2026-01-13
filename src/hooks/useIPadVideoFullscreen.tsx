@@ -140,6 +140,8 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           align-items: center !important;
           justify-content: center !important;
           overflow: hidden !important;
+          /* CRITICAL: Allow touch/pointer events for controls */
+          touch-action: manipulation !important;
         }
 
         /* Video element - contain within screen bounds, never overflow */
@@ -151,6 +153,8 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           max-height: 100vh !important;
           max-height: 100dvh !important;
           object-fit: contain !important;
+          /* Allow pinch-to-zoom touch events */
+          touch-action: pinch-zoom pan-x pan-y !important;
         }
         
         /* Native app landscape fullscreen - critical sizing fix */
@@ -186,16 +190,27 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           }
         }
 
+        /* Body in fullscreen mode - prevent scrolling but ALLOW touch events */
         body.video-fullscreen-active {
           overflow: hidden !important;
           position: fixed !important;
           width: 100% !important;
           height: 100% !important;
-          touch-action: none !important;
+          /* CRITICAL: Use 'manipulation' instead of 'none' to allow taps/clicks */
+          touch-action: manipulation !important;
         }
 
         .video-fullscreen-container .video-controls {
           z-index: 100000 !important;
+          /* Ensure controls receive pointer events */
+          pointer-events: auto !important;
+        }
+        
+        /* Ensure all buttons in fullscreen are tappable */
+        .video-fullscreen-container button,
+        .video-fullscreen-container [role="button"] {
+          pointer-events: auto !important;
+          touch-action: manipulation !important;
         }
         
         body.video-fullscreen-active nav,
