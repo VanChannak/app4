@@ -140,11 +140,10 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           align-items: center !important;
           justify-content: center !important;
           overflow: hidden !important;
-          /* CRITICAL: Allow touch/pointer events for controls */
           touch-action: manipulation !important;
         }
 
-        /* Video element - contain within screen bounds, never overflow */
+        /* Video element - contain within screen bounds */
         .video-fullscreen-container video {
           width: 100% !important;
           height: 100% !important;
@@ -153,11 +152,10 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           max-height: 100vh !important;
           max-height: 100dvh !important;
           object-fit: contain !important;
-          /* Allow pinch-to-zoom touch events */
           touch-action: pinch-zoom pan-x pan-y !important;
         }
         
-        /* Native app landscape fullscreen - critical sizing fix */
+        /* Android native landscape fullscreen - critical sizing fix */
         @media screen and (orientation: landscape) {
           .video-fullscreen-container {
             width: 100vw !important;
@@ -166,6 +164,9 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
             height: 100dvh !important;
             padding: 0 !important;
             margin: 0 !important;
+            /* Android safe area handling */
+            padding-left: env(safe-area-inset-left, 0) !important;
+            padding-right: env(safe-area-inset-right, 0) !important;
           }
           
           .video-fullscreen-container video {
@@ -178,44 +179,30 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
             object-fit: contain !important;
           }
         }
-        
-        /* iPad/Tablet specific - ensure video fits within screen bounds */
-        @media screen and (min-width: 768px) {
-          .video-fullscreen-container video {
-            object-fit: contain !important;
-            max-height: 100vh !important;
-            max-height: 100dvh !important;
-            max-width: 100vw !important;
-            max-width: 100dvw !important;
-          }
-        }
 
-        /* Body in fullscreen mode - prevent scrolling but ALLOW touch events */
+        /* Body in fullscreen mode */
         body.video-fullscreen-active {
           overflow: hidden !important;
           position: fixed !important;
           width: 100% !important;
           height: 100% !important;
-          /* CRITICAL: Use 'manipulation' instead of 'none' to allow taps/clicks */
           touch-action: manipulation !important;
         }
 
+        /* Video controls - high z-index for Android touch */
         .video-fullscreen-container .video-controls {
           z-index: 100000 !important;
-          /* Ensure controls receive pointer events */
           pointer-events: auto !important;
-          /* CRITICAL for Android: position context for z-index */
           position: absolute !important;
         }
         
-        /* Ensure the inner controls wrapper is also clickable */
         .video-fullscreen-container .video-controls > div {
           pointer-events: auto !important;
           position: relative !important;
           z-index: 100001 !important;
         }
         
-        /* Ensure all buttons in fullscreen are tappable - higher specificity */
+        /* All buttons tappable on Android */
         .video-fullscreen-container button,
         .video-fullscreen-container [role="button"],
         .video-fullscreen-container .video-controls button {
@@ -223,12 +210,11 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           touch-action: manipulation !important;
           z-index: 100002 !important;
           position: relative !important;
-          /* Ensure minimum tap target size for Android */
           min-width: 44px !important;
           min-height: 44px !important;
         }
         
-        /* Ensure slider/progress bar is interactive */
+        /* Slider/progress bar interactive */
         .video-fullscreen-container input[type="range"],
         .video-fullscreen-container [role="slider"] {
           pointer-events: auto !important;
@@ -236,6 +222,7 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           z-index: 100002 !important;
         }
         
+        /* Hide navigation in fullscreen */
         body.video-fullscreen-active nav,
         body.video-fullscreen-active [data-bottom-nav],
         body.video-fullscreen-active .bottom-nav,

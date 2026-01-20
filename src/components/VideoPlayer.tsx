@@ -40,6 +40,7 @@ import { VideoAdPlayer } from '@/components/ads/VideoAdPlayer';
 import { useSiteSettings } from '@/contexts/SiteSettingsContext';
 import AppLockOverlay from '@/components/AppLockOverlay';
 import { useAdMobRewarded } from '@/hooks/useAdMobRewarded';
+import { EpisodeListDrawer } from '@/components/player/EpisodeListDrawer';
 
 interface VideoPlayerProps {
   videoSources: VideoSource[];
@@ -2060,16 +2061,16 @@ const VideoPlayer = ({
         />
       )}
 
-      {/* Center Controls - hide when settings menu is open */}
+      {/* Center Controls - hide when settings menu is open - Modern glass style with smaller icons */}
       {sourceType !== "embed" && sourceType !== "iframe" && !allSourcesMobileOnly && !allSourcesWebOnly && !isCurrentServerRestricted && (
         <>
-          <div className={`video-controls absolute inset-0 z-20 flex items-center justify-center gap-12 pointer-events-none transition-opacity duration-300 ${showControls && !isLocked && !settingsMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
-            <Button variant="ghost" size="icon" onClick={skipBackward} className="h-12 w-12 text-white/90 hover:text-white pointer-events-auto">
-              <SkipBack className="h-6 w-6" fill="currentColor" />
+          <div className={`video-controls absolute inset-0 z-20 flex items-center justify-center gap-8 pointer-events-none transition-opacity duration-300 ${showControls && !isLocked && !settingsMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
+            <Button variant="ghost" size="icon" onClick={skipBackward} className="h-10 w-10 text-white/80 hover:text-white pointer-events-auto bg-white/5 backdrop-blur-sm rounded-full hover:bg-white/10">
+              <SkipBack className="h-4 w-4" fill="currentColor" />
             </Button>
-            <div className="w-16" />
-            <Button variant="ghost" size="icon" onClick={skipForward} className="h-12 w-12 text-white/90 hover:text-white pointer-events-auto">
-              <SkipForward className="h-6 w-6" fill="currentColor" />
+            <div className="w-12" />
+            <Button variant="ghost" size="icon" onClick={skipForward} className="h-10 w-10 text-white/80 hover:text-white pointer-events-auto bg-white/5 backdrop-blur-sm rounded-full hover:bg-white/10">
+              <SkipForward className="h-4 w-4" fill="currentColor" />
             </Button>
           </div>
 
@@ -2079,23 +2080,23 @@ const VideoPlayer = ({
                 variant="ghost"
                 size="icon"
                 onClick={togglePlayPause}
-                className={`h-16 w-16 rounded-full text-white transition-all hover:scale-105 pointer-events-auto ${showCenterIcon ? 'animate-in zoom-in-95 duration-200' : ''}`}
+                className={`h-14 w-14 rounded-full text-white transition-all hover:scale-105 pointer-events-auto bg-white/10 backdrop-blur-md border border-white/20 shadow-lg ${showCenterIcon ? 'animate-in zoom-in-95 duration-200' : ''}`}
               >
-                {isPlaying ? <Pause className="h-7 w-7" fill="currentColor" /> : <Play className="h-7 w-7 ml-0.5" fill="currentColor" />}
+                {isPlaying ? <Pause className="h-5 w-5" fill="currentColor" /> : <Play className="h-5 w-5 ml-0.5" fill="currentColor" />}
               </Button>
             </div>
           )}
         </>
       )}
 
-      {/* Bottom Controls */}
+      {/* Bottom Controls - Modern glass style with super thin elements */}
       {sourceType !== "embed" && sourceType !== "iframe" && !allSourcesMobileOnly && !allSourcesWebOnly && !isCurrentServerRestricted && (
         <div className={`video-controls absolute inset-0 z-40 transition-opacity duration-300 pointer-events-none ${showControls ? 'opacity-100' : 'opacity-0'}`}>
           <div className="absolute bottom-0 left-0 right-0 pointer-events-auto">
-            {/* Progress Bar */}
-            <div className="px-2 sm:px-4 pb-1.5 sm:pb-2">
-              <div className="relative h-1 sm:h-1.5 bg-white/20 rounded-full cursor-pointer group/progress">
-                <div className="absolute h-full bg-white/30 rounded-full" style={{ width: `${(buffered / duration) * 100}%` }} />
+            {/* Progress Bar - Super thin */}
+            <div className="px-2 sm:px-4 pb-1 sm:pb-1.5">
+              <div className="relative h-[3px] sm:h-1 bg-white/15 rounded-full cursor-pointer group/progress">
+                <div className="absolute h-full bg-white/25 rounded-full" style={{ width: `${(buffered / duration) * 100}%` }} />
                 <Slider
                   value={[currentTime]}
                   max={duration || 100}
@@ -2106,21 +2107,21 @@ const VideoPlayer = ({
               </div>
             </div>
 
-            {/* Control Buttons */}
-            <div className="bg-gradient-to-t from-black/90 via-black/60 to-transparent px-2 sm:px-4 pb-2 sm:pb-4 pt-1 sm:pt-2">
-              <div className="flex items-center justify-between gap-1 sm:gap-2">
-                {/* Left Controls */}
-                <div className="flex items-center gap-0.5 sm:gap-2">
-                  <Button variant="ghost" size="icon" onClick={togglePlayPause} className="h-7 w-7 sm:h-9 sm:w-9 text-white hover:bg-white/10">
-                    {isPlaying ? <Pause className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" /> : <Play className="h-4 w-4 sm:h-5 sm:w-5 ml-0.5" fill="currentColor" />}
+            {/* Control Buttons - Glass style with thin UI */}
+            <div className="bg-gradient-to-t from-black/70 via-black/40 to-transparent backdrop-blur-[2px] px-2 sm:px-3 pb-1.5 sm:pb-2.5 pt-0.5 sm:pt-1">
+              <div className="flex items-center justify-between gap-0.5 sm:gap-1.5">
+                {/* Left Controls - Smaller icons */}
+                <div className="flex items-center gap-0.5 sm:gap-1">
+                  <Button variant="ghost" size="icon" onClick={togglePlayPause} className="h-6 w-6 sm:h-7 sm:w-7 text-white/90 hover:bg-white/10 hover:text-white">
+                    {isPlaying ? <Pause className="h-3 w-3 sm:h-3.5 sm:w-3.5" fill="currentColor" /> : <Play className="h-3 w-3 sm:h-3.5 sm:w-3.5 ml-0.5" fill="currentColor" />}
                   </Button>
                   
-                  {/* Volume - hide on mobile */}
-                  <div className="hidden sm:flex items-center gap-2 group/volume">
-                    <Button variant="ghost" size="icon" onClick={toggleMute} className="h-9 w-9 text-white hover:bg-white/10">
-                      {isMuted || volume === 0 ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                  {/* Volume - hide on mobile - smaller */}
+                  <div className="hidden sm:flex items-center gap-1 group/volume">
+                    <Button variant="ghost" size="icon" onClick={toggleMute} className="h-7 w-7 text-white/90 hover:bg-white/10">
+                      {isMuted || volume === 0 ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
                     </Button>
-                    <div className="w-20 opacity-0 group-hover/volume:opacity-100 transition-opacity">
+                    <div className="w-16 opacity-0 group-hover/volume:opacity-100 transition-opacity">
                       <Slider
                         value={[isMuted ? 0 : volume]}
                         max={1}
@@ -2132,27 +2133,22 @@ const VideoPlayer = ({
                   </div>
 
                   {/* Time - compact on mobile */}
-                  <span className="text-white text-[10px] sm:text-sm ml-0.5 sm:ml-2 whitespace-nowrap">
+                  <span className="text-white/80 text-[9px] sm:text-xs ml-0.5 sm:ml-1 whitespace-nowrap font-light">
                     {formatTime(currentTime)} / {formatTime(duration)}
                   </span>
                 </div>
 
-                {/* Right Controls */}
-                <div className="flex items-center gap-0.5 sm:gap-2">
-                  {/* Episodes List Button - only show for series with episodes */}
+                {/* Right Controls - Smaller icons */}
+                <div className="flex items-center gap-0 sm:gap-0.5">
+                  {/* Episodes List Button - only show for series with episodes - smaller */}
                   {episodes && episodes.length > 0 && onEpisodeSelect && (
                     <Button 
                       variant="ghost" 
-                      className="h-7 sm:h-9 px-2 sm:px-3 text-white hover:bg-white/10 flex items-center gap-1 sm:gap-1.5"
+                      className="h-6 sm:h-7 px-1.5 sm:px-2 text-white/90 hover:bg-white/10 flex items-center gap-0.5 sm:gap-1"
                       onClick={() => setShowEpisodesPanel(!showEpisodesPanel)}
                     >
-                      <span className="text-[10px] sm:text-xs font-medium">Episodes</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none">
-                        <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10">
-                          <path d="M21.5 5.5h-17v18h17zm-1-2h-15m16-2h-17l-3 2l3 2m-3-2v18l3 2"/>
-                          <path d="M11.5 12.75L9.5 14l-2-1.25v-2l2-1.25l2 1.25zm4.5-.25l-3 5l-2.5-1l-2 3h10z"/>
-                        </g>
-                      </svg>
+                      <span className="text-[8px] sm:text-[10px] font-light">EP</span>
+                      <ListVideo className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     </Button>
                   )}
 
@@ -2176,12 +2172,12 @@ const VideoPlayer = ({
                     onOpenChange={handleSettingsMenuOpenChange}
                   />
 
-                  {/* Picture in Picture - hide on mobile */}
-                  <Button variant="ghost" size="icon" onClick={togglePictureInPicture} className="hidden sm:flex h-9 w-9 text-white hover:bg-white/10">
-                    <PictureInPicture className="h-5 w-5" />
+                  {/* Picture in Picture - hide on mobile - smaller */}
+                  <Button variant="ghost" size="icon" onClick={togglePictureInPicture} className="hidden sm:flex h-7 w-7 text-white/90 hover:bg-white/10">
+                    <PictureInPicture className="h-3.5 w-3.5" />
                   </Button>
 
-                  {/* Fullscreen Toggle Button - Enhanced for iPad PWA */}
+                  {/* Fullscreen Toggle Button - Enhanced for iPad PWA - smaller */}
                   <Button 
                     variant="ghost" 
                     size="icon"
@@ -2189,22 +2185,19 @@ const VideoPlayer = ({
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      // Avoid double-triggering from both click and touchend
                       if (!(e.nativeEvent as any).fromTouch) {
                         toggleFullscreen();
                       }
                     }}
                     onTouchStart={(e) => {
-                      // Mark this as a touch event to prevent click from also firing
                       (e.nativeEvent as any).fromTouch = true;
                     }}
                     onTouchEnd={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      // Use setTimeout to ensure touch is processed properly on iPad
                       setTimeout(() => toggleFullscreen(), 0);
                     }}
-                    className={`h-8 w-8 sm:h-9 sm:w-9 text-white hover:bg-white/10 active:bg-white/20 touch-manipulation select-none ${
+                    className={`h-6 w-6 sm:h-7 sm:w-7 text-white/90 hover:bg-white/10 active:bg-white/20 touch-manipulation select-none ${
                       isFullscreenTransitioning ? 'opacity-50 cursor-wait' : ''
                     }`}
                     style={{ 
@@ -2212,123 +2205,54 @@ const VideoPlayer = ({
                       touchAction: 'manipulation'
                     }}
                   >
-                    {isFullscreen ? <Minimize className="h-5 w-5 sm:h-5 sm:w-5" /> : <Maximize className="h-5 w-5 sm:h-5 sm:w-5" />}
+                    {isFullscreen ? <Minimize className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Maximize className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                   </Button>
                 </div>
               </div>
+              
+              {/* Site name / branding - bottom right corner */}
+              {siteSettings?.site_title && (
+                <div className="flex justify-end mt-0.5">
+                  <span className="text-white/40 text-[7px] sm:text-[8px] font-light tracking-wide">
+                    {siteSettings.site_title}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
 
-      {/* Episodes Panel Overlay */}
+      {/* Episodes Panel Overlay - Using EpisodeListDrawer with glass UI */}
       {showEpisodesPanel && episodes && episodes.length > 0 && onEpisodeSelect && (
         <div className="absolute inset-0 z-[100] flex flex-col justify-end pointer-events-none">
           {/* Backdrop to close */}
           <div 
-            className="absolute inset-0 bg-black/15 pointer-events-auto"
+            className="absolute inset-0 bg-black/10 pointer-events-auto"
             onClick={() => setShowEpisodesPanel(false)}
           />
           
-          {/* Episodes Panel */}
-          <div className="relative bg-black/15 backdrop-blur-sm p-4 pointer-events-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-white font-semibold text-sm">Episodes</span>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-8 w-8 text-white hover:bg-white/20"
-                onClick={() => setShowEpisodesPanel(false)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            {/* Horizontal Scroll Episodes with Navigation Arrows */}
-            <div className="relative group/episodes">
-              {/* Left Navigation Arrow - Desktop only */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-black/50 hover:bg-black/70 text-white/80 hover:text-white border border-white/20"
-                onClick={() => {
-                  if (episodesScrollRef.current) {
-                    episodesScrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-                  }
-                }}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-
-              {/* Right Navigation Arrow - Desktop only */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-black/50 hover:bg-black/70 text-white/80 hover:text-white border border-white/20"
-                onClick={() => {
-                  if (episodesScrollRef.current) {
-                    episodesScrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-                  }
-                }}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-
-              {/* Episodes Scroll Container */}
-              <div 
-                ref={episodesScrollRef}
-                className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide scroll-smooth px-2 sm:px-8"
-              >
-                {episodes.map((episode) => {
-                  const isActive = currentEpisodeId === episode.id;
-                  const thumbnail = episode.still_path || contentBackdrop || '/placeholder.svg';
-                  return (
-                    <div
-                      key={episode.id}
-                      className={`flex-shrink-0 w-48 sm:w-56 cursor-pointer ${isActive ? 'ring-2 ring-primary rounded-lg' : ''}`}
-                      onClick={() => {
-                        // Close any playing ad when switching episodes
-                        if (showVideoAd) {
-                          setShowVideoAd(false);
-                          setCurrentVideoAd(null);
-                        }
-                        onEpisodeSelect(episode.id);
-                        setShowEpisodesPanel(false);
-                      }}
-                    >
-                      {/* Thumbnail */}
-                      <div className="relative aspect-video rounded-lg overflow-hidden bg-muted mb-2">
-                        <img
-                          src={thumbnail}
-                          alt={`Episode ${episode.episode_number}`}
-                          className="w-full h-full object-cover group-hover:opacity-80 transition-opacity"
-                        />
-                        {/* Episode number badge */}
-                        <div className="absolute bottom-2 left-2">
-                          <span className="text-3xl sm:text-4xl font-black text-white leading-none" style={{
-                            textShadow: '2px 2px 0px rgba(0,0,0,0.9), 4px 4px 8px rgba(0,0,0,0.5)',
-                            WebkitTextStroke: '0.5px rgba(255,255,255,0.2)'
-                          }}>
-                            {episode.episode_number}
-                          </span>
-                        </div>
-                        {/* Active indicator */}
-                        {isActive && (
-                          <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                            <Play className="h-8 w-8 text-white" fill="white" />
-                          </div>
-                        )}
-                      </div>
-                      {/* Title */}
-                      <p className="text-white text-xs sm:text-sm font-medium truncate px-1">
-                        EP {episode.episode_number}: {episode.title}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+          {/* Episode List Drawer - Frosted glass style */}
+          <div className="relative pointer-events-auto">
+            <EpisodeListDrawer
+              episodes={episodes.map(ep => ({
+                id: ep.id,
+                episode_number: ep.episode_number,
+                title: ep.title,
+                thumbnail_url: ep.still_path,
+              }))}
+              currentEpisodeId={currentEpisodeId}
+              onEpisodeSelect={(episode) => {
+                // Close any playing ad when switching episodes
+                if (showVideoAd) {
+                  setShowVideoAd(false);
+                  setCurrentVideoAd(null);
+                }
+                onEpisodeSelect(episode.id);
+              }}
+              onClose={() => setShowEpisodesPanel(false)}
+              seriesThumbnail={contentBackdrop}
+            />
           </div>
         </div>
       )}
