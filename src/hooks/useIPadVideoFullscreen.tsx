@@ -202,7 +202,7 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           z-index: 100001 !important;
         }
         
-        /* All buttons tappable on Android */
+        /* All buttons tappable on Android - CRITICAL fixes */
         .video-fullscreen-container button,
         .video-fullscreen-container [role="button"],
         .video-fullscreen-container .video-controls button {
@@ -212,6 +212,15 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           position: relative !important;
           min-width: 44px !important;
           min-height: 44px !important;
+          /* Prevent any transform that could break hit testing on Android */
+          -webkit-transform: translateZ(0) !important;
+          transform: translateZ(0) !important;
+          /* Ensure button is in its own compositing layer */
+          will-change: transform !important;
+          /* Remove any webkit tap highlight that might interfere */
+          -webkit-tap-highlight-color: transparent !important;
+          /* Ensure the button receives touch events */
+          cursor: pointer !important;
         }
         
         /* Slider/progress bar interactive */
@@ -220,6 +229,13 @@ export function useIPadVideoFullscreen({ containerRef, videoRef }: UseIPadVideoF
           pointer-events: auto !important;
           touch-action: manipulation !important;
           z-index: 100002 !important;
+        }
+        
+        /* Android landscape - ensure bottom controls are above safe area */
+        @media screen and (orientation: landscape) {
+          .video-fullscreen-container .video-controls {
+            padding-bottom: env(safe-area-inset-bottom, 0) !important;
+          }
         }
         
         /* Hide navigation in fullscreen */
