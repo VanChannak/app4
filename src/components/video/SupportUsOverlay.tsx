@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Heart, Wallet, ChevronRight, Loader2 } from 'lucide-react';
@@ -93,7 +94,9 @@ export const SupportUsOverlay = ({
     return () => clearInterval(timer);
   }, [isVisible, onSkip, isProcessingPayment, step, showAuthDialog, countdownSeconds]);
 
-  const handleSupportClick = useCallback(() => {
+  const handleSupportClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!user) {
       setShowAuthDialog(true);
       setShowAuthDialogPending(true);
@@ -201,7 +204,10 @@ export const SupportUsOverlay = ({
 
   return (
     <>
-      <div className="absolute inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+      <div 
+        className="absolute inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm pointer-events-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Countdown circle - positioned at 50% of video height (right side) */}
         <div className="absolute top-1/2 right-3 -translate-y-1/2 flex items-center gap-1.5">
           <div className="relative w-7 h-7">
@@ -260,7 +266,8 @@ export const SupportUsOverlay = ({
               <Button
                 onClick={handleSupportClick}
                 size="sm"
-                className="w-full h-7 gap-1 text-xs bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold"
+                className="w-full h-7 gap-1 text-xs bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white font-semibold pointer-events-auto relative z-[70] touch-manipulation"
+                type="button"
               >
                 <Heart className="w-3 h-3" />
                 Support
@@ -380,19 +387,29 @@ export const SupportUsOverlay = ({
         </div>
       </div>
 
-      {/* Auth Dialog */}
-      <AuthDialog
-        open={showAuthDialog}
-        onOpenChange={handleAuthDialogClose}
-        onSuccess={handleAuthSuccess}
-      />
+      {/* Auth Dialog - Portal to body for proper z-index */}
+      {showAuthDialog && createPortal(
+        <div className="fixed inset-0 z-[10000]">
+          <AuthDialog
+            open={showAuthDialog}
+            onOpenChange={handleAuthDialogClose}
+            onSuccess={handleAuthSuccess}
+          />
+        </div>,
+        document.body
+      )}
 
-      {/* KHQR Payment Dialog for Top Up */}
-      <KHQRPaymentDialog
-        isOpen={showKHQRDialog}
-        onClose={() => setShowKHQRDialog(false)}
-        onSuccess={handleTopupSuccess}
-      />
+      {/* KHQR Payment Dialog for Top Up - Portal to body for proper z-index */}
+      {showKHQRDialog && createPortal(
+        <div className="fixed inset-0 z-[10000]">
+          <KHQRPaymentDialog
+            isOpen={showKHQRDialog}
+            onClose={() => setShowKHQRDialog(false)}
+            onSuccess={handleTopupSuccess}
+          />
+        </div>,
+        document.body
+      )}
     </>
   );
 };
