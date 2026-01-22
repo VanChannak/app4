@@ -3,7 +3,7 @@ import {
   Play, Pause, Volume2, VolumeX, Maximize, Minimize, 
   Monitor, Film, Video, Loader2, SkipBack, SkipForward, Crown,
   PictureInPicture, Server as ServerIcon,
-  CreditCard, ListVideo, ChevronLeft, ChevronRight, X, Expand
+  CreditCard, ListVideo, ChevronLeft, ChevronRight, X
 } from "lucide-react";
 import { VideoSettingsMenu } from "./VideoSettingsMenu";
 // @ts-ignore - Shaka Player types
@@ -1962,28 +1962,6 @@ const VideoPlayer = ({
             <line x1="8" y1="11" x2="14" y2="11"/>
           </svg>
           <span className="text-white text-xs font-medium">{zoomPercentage}%</span>
-        </button>
-      )}
-
-      {/* Expand Icon - Top Left Corner (only in portrait/non-fullscreen) */}
-      {!isFullscreen && showControls && !isLocked && !accessLoading && sourceType !== "embed" && sourceType !== "iframe" && !allSourcesMobileOnly && !allSourcesWebOnly && !isCurrentServerRestricted && (
-        <button
-          onClick={() => {
-            console.log('[VideoPlayer] Expand button clicked');
-            if (!isFullscreenTransitioning) {
-              toggleFullscreen();
-            }
-          }}
-          disabled={isFullscreenTransitioning}
-          className={`absolute top-3 left-3 z-[70] h-8 w-8 flex items-center justify-center bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-md border border-white/20 transition-all duration-200 ${
-            isFullscreenTransitioning ? 'opacity-50 cursor-wait' : ''
-          }`}
-          style={{ 
-            WebkitTapHighlightColor: 'transparent',
-            touchAction: 'manipulation',
-          }}
-        >
-          <Expand className="h-4 w-4 text-white" />
         </button>
       )}
       
